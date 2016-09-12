@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import QueryBuilder from './QueryBuilder';
 import './index.css';
+import './QueryBuilder.css'
 
 const fields = [
     {name: 'firstName', label: 'First Name'},
