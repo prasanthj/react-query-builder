@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {QueryBuilder} from 'react-querybuilder';
+import QueryBuilder from './QueryBuilder';
 import './index.css';
 
 const fields = [
@@ -16,10 +16,10 @@ const fields = [
 
 function logQuery(query) {
     console.log(query);
+    //console.log(sql);
 }
 
 ReactDOM.render(
-  <QueryBuilder fields={fields}
-                          onQueryChange={logQuery}/>,
+  <QueryBuilder fields={fields} onQueryChange={logQuery}/>,
   document.getElementById('root')
 );
