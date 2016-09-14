@@ -22,6 +22,7 @@ export default class RuleGroup extends React.Component {
         e.preventDefault();
         e.stopPropagation();
 
+        console.log(this.props)
         const {createRule, onRuleAdd} = this.props.schema;
 
         const newRule = createRule();

@@ -16,11 +16,10 @@ const fields = [
 ];
 
 function logQuery(query) {
-    console.log(query);
-    //console.log(sql);
+    //console.log(query);
 }
 
 ReactDOM.render(
-  <QueryBuilder fields={fields} onQueryChange={logQuery}/>,
+  <QueryBuilder fields={fields} isSQL={true} onQueryChange={logQuery}/>,
   document.getElementById('root')
 );
