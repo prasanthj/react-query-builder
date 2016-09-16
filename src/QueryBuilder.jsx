@@ -1,7 +1,7 @@
 import React from 'react';
 import RuleGroup from './RuleGroup';
 import uniqueId from './utils/unique-id';
-import Utils from './utils/utils';
+import {error, format, changeType} from './utils/utils';
 
 export default class QueryBuilder extends React.Component {
 	static get defaultProps() {
@@ -273,13 +273,14 @@ export default class QueryBuilder extends React.Component {
 
         if (isRuleGroup(node)) {
             const {combinator, rules} = node;
+            var ast = rules.map(r=> this._constructQuery(r, {}))
+            var sql = this.props.isSQL ? this._getSQL(node, operators): 'SQL is disabled';
             query = {
                 combinator,
-                rules: rules.map(r=> this._constructQuery(r, {}))
+                rules: ast,
+                sql: sql
             };
-            if (this.props.isSQL) {
-                this._getSQL(node, operators);
-            }
+            console.log(query);
         } else {
             const {field, operator, value} = node;
             query = {field, operator, value};
@@ -297,7 +298,7 @@ export default class QueryBuilder extends React.Component {
                 data.combinator = 'and';
             }
             if (['AND', 'OR'].indexOf(data.combinator.toUpperCase()) === -1) {
-                Utils.error('UndefinedSQLCondition', 'Unable to build SQL query with condition "{0}"', data.combinator);
+                error('UndefinedSQLCondition', 'Unable to build SQL query with condition "{0}"', data.combinator);
             }
 
             if (!data.rules) {
@@ -312,53 +313,175 @@ export default class QueryBuilder extends React.Component {
                 }
                 else {
                     var sqlOp = operators.filter(v => v.name === rule.operator)[0];
-                    var op = sqlOp.op
-                    var inputValue = rule.value.toLowerCase().trim();
-                    var sqlStr = '';
+                    if (sqlOp != undefined) {
+                        var op = sqlOp.op
+                        var inputValue = rule.value.toLowerCase().trim();
+                        var sqlStr = '';
 
-                    if (op === undefined) {
-                        Utils.error('UndefinedSQLOperator', 'Unknown SQL operation for operator "{0}"', rule.operator);
-                    }
-
-                    if (sqlOp.nb_inputs !== 0) {
-                        if (sqlOp.multiple && inputValue.includes(sqlOp.separator.toLowerCase())) {
-                            var tokens = inputValue.split(sqlOp.separator.toLowerCase())
-                            inputValue = tokens
+                        if (op === undefined) {
+                            error('UndefinedSQLOperator', 'Unknown SQL operation for operator "{0}"', rule.operator);
                         }
 
-                        if (!(inputValue instanceof Array)) {
-                            inputValue = [inputValue];
+                        if (sqlOp.nb_inputs !== 0) {
+                            if (sqlOp.multiple && inputValue.includes(sqlOp.separator.toLowerCase())) {
+                                var tokens = inputValue.split(sqlOp.separator.toLowerCase())
+                                inputValue = tokens
+                            }
+
+                            if (!(inputValue instanceof Array)) {
+                                inputValue = [inputValue];
+                            }
+
+                            inputValue.forEach(function(v, i) {
+                                if (i > 0) {
+                                    sqlStr+= sqlOp.separator;
+                                }
+
+                                if (rule.type == 'integer' || rule.type == 'double' || rule.type == 'boolean') {
+                                    v = changeType(v, rule.type, true);
+                                }
+
+                                if (sqlOp.mod) {
+                                    v = format(sqlOp.mod, v);
+                                }
+
+                                if (typeof v == 'string') {
+                                    v = '\'' + v + '\'';
+                                }
+
+                                sqlStr+= v;
+                            });
                         }
 
-                        inputValue.forEach(function(v, i) {
-                            if (i > 0) {
-                                sqlStr+= sqlOp.separator;
-                            }
-
-                            if (rule.type == 'integer' || rule.type == 'double' || rule.type == 'boolean') {
-                                v = Utils.changeType(v, rule.type, true);
-                            }
-
-                            if (op.mod) {
-                                v = format(op.mod, v);
-                            }
-
-                            if (typeof v == 'string') {
-                                v = '\'' + v + '\'';
-                            }
-
-                            sqlStr+= v;
-                        });
+                        var stmt = rule.field + ' ' + op.replace(/\?/, sqlStr);
+                        // between includes a combinator AND, so wrap it in a parantheses
+                        if (stmt.includes('BETWEEN') || stmt.includes('between')) {
+                            stmt = '(' + stmt + ')'
+                        }
+                        parts.push(stmt);
                     }
-
-                    parts.push(rule.field + ' ' + op.replace(/\?/, sqlStr));
                 }
             });
 
             return parts.join(' ' + data.combinator + nl);
         }(data));
 
-        console.log(sql)
+        return sql;
+    }
+
+    static getRulesFromSQL= function(data) {
+        require('sql-parser');
+        if (!('SQLParser' in window)) {
+            Utils.error('MissingLibrary', 'SQLParser is required to parse SQL queries. Get it here https://github.com/mistic100/sql-parser');
+        }
+
+        // var self = this;
+
+        // if (typeof data == 'string') {
+        //     data = { sql: data };
+        // }
+
+        // if (data.sql.toUpperCase().indexOf('SELECT') !== 0) {
+        //     data.sql = 'SELECT * FROM table WHERE ' + data.sql;
+        // }
+
+        // var parsed = SQLParser.parse(data.sql);
+
+        // if (!parsed.where) {
+        //     Utils.error('SQLParse', 'No WHERE clause found');
+        // }
+
+        // var out = {
+        //     condition: 'and',
+        //     rules: []
+        // };
+        // var curr = out;
+
+        // (function flatten(data, i) {
+        //     // it's a node
+        //     if (['AND', 'OR'].indexOf(data.operation.toUpperCase()) !== -1) {
+        //         // create a sub-group if the condition is not the same and it's not the first level
+        //         if (i > 0 && curr.condition != data.operation.toUpperCase()) {
+        //             curr.rules.push({
+        //                 condition: self.settings.default_condition,
+        //                 rules: []
+        //             });
+
+        //             curr = curr.rules[curr.rules.length - 1];
+        //         }
+
+        //         curr.condition = data.operation.toUpperCase();
+        //         i++;
+
+        //         // some magic !
+        //         var next = curr;
+        //         flatten(data.left, i);
+
+        //         curr = next;
+        //         flatten(data.right, i);
+        //     }
+        //     // it's a leaf
+        //     else {
+        //         if (data.left.value === undefined || data.right.value === undefined) {
+        //             Utils.error('SQLParse', 'Missing field and/or value');
+        //         }
+
+        //         if ($.isPlainObject(data.right.value)) {
+        //             Utils.error('SQLParse', 'Value format not supported for {0}.', data.left.value);
+        //         }
+
+        //         // convert array
+        //         var value;
+        //         if ($.isArray(data.right.value)) {
+        //             value = data.right.value.map(function(v) {
+        //                 return v.value;
+        //             });
+        //         }
+        //         else {
+        //             value = data.right.value;
+        //         }
+
+        //         // get actual values
+        //         if (stmt) {
+        //             if ($.isArray(value)) {
+        //                 value = value.map(stmt.parse);
+        //             }
+        //             else {
+        //                 value = stmt.parse(value);
+        //             }
+        //         }
+
+        //         // convert operator
+        //         var operator = data.operation.toUpperCase();
+        //         if (operator == '<>') operator = '!=';
+
+        //         var sqlrl;
+        //         if (operator == 'NOT LIKE') {
+        //             sqlrl = self.settings.sqlRuleOperator['LIKE'];
+        //         }
+        //         else {
+        //             sqlrl = self.settings.sqlRuleOperator[operator];
+        //         }
+
+        //         if (sqlrl === undefined) {
+        //             Utils.error('UndefinedSQLOperator', 'Invalid SQL operation "{0}".', data.operation);
+        //         }
+
+        //         var opVal = sqlrl.call(this, value, data.operation);
+        //         if (operator == 'NOT LIKE') opVal.op = 'not_' + opVal.op;
+
+        //         var left_value = data.left.values.join('.');
+
+        //         curr.rules.push({
+        //             id: self.change('getSQLFieldID', left_value, value),
+        //             field: left_value,
+        //             operator: opVal.op,
+        //             value: opVal.val
+        //         });
+        //     }
+        // }(parsed.where.conditions, 0));
+
+        // return out;
     }
 
     _getOperatorByType = function(type) {
