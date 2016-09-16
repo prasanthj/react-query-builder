@@ -31,9 +31,10 @@ export default class Rule extends React.Component {
 						value={field}
 						onChange={e => this.onValueChanged('field', e.target.value)}>
 				        {
-                        	fields.map(field=> {
+                        	Object.keys(fields).map(key=> {
+                        		var value = fields[key];
                                 return (
-                                    <option key={field.name} value={field.name}>{field.label}</option>
+                                    <option key={value.name} value={value.name}>{value.label}</option>
                                 );
                             })
                         }
@@ -42,7 +43,8 @@ export default class Rule extends React.Component {
 						value={operator}
 						onChange={e => this.onValueChanged('operator', e.target.value)}>
 						{
-                            getOperators(field).map(op=> {
+                            Object.keys(getOperators()).map(key=> {
+                            	var op = getOperators()[key];
                                 return (
                                     <option value={op.name} key={op.name}>{op.label}</option>
                                 );

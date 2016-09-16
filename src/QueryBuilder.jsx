@@ -79,43 +79,43 @@ export default class QueryBuilder extends React.Component {
     }
 
 	static get defaultOperators() {
-        return [
-            {name: 'null', label: 'Is Null', nb_inputs: 0},
-            {name: 'notNull', label: 'Is Not Null', nb_inputs: 0},
-            {name: 'in', label: 'In', nb_inputs: 1},
-            {name: 'notIn', label: 'Not In', nb_inputs: 1},
-            {name: '=', label: '=', nb_inputs: 1},
-            {name: '!=', label: '!=', nb_inputs: 1},
-            {name: '<', label: '<', nb_inputs: 1},
-            {name: '>', label: '>', nb_inputs: 1},
-            {name: '<=', label: '<=', nb_inputs: 1},
-            {name: '>=', label: '>=', nb_inputs: 1},
-        ];
+        return {
+            is_null: {name: 'is_null', label: 'Is Null', nb_inputs: 0},
+            is_not_null: {name: 'is_not_null', label: 'Is Not Null', nb_inputs: 0},
+            in: {name: 'in', label: 'In', nb_inputs: 1},
+            not_in: {name: 'not_in', label: 'Not In', nb_inputs: 1},
+            equal: {name: 'equal', label: '=', nb_inputs: 1},
+            not_equal: {name: 'not_equal', label: '!=', nb_inputs: 1},
+            less: {name: 'less', label: '<', nb_inputs: 1},
+            greater: {name: 'greater', label: '>', nb_inputs: 1},
+            less_or_equal: {name: 'less_or_equal', label: '<=', nb_inputs: 1},
+            greater_or_equal: {name: 'greater_or_equal', label: '>=', nb_inputs: 1},
+        };
     }
 
     static get sqlOperators() {
-        return [
-            {name: 'equal',              op: '= ?',           label: 'equal',                nb_inputs: 1, multiple: false, apply_to: ['string', 'number', 'datetime', 'boolean']},
-            {name: 'not equal',          op: '!= ?',          label: 'not equal',            nb_inputs: 1, multiple: false, apply_to: ['string', 'number', 'datetime', 'boolean']},
-            {name: 'in',                 op: 'IN(?)',         label: 'in',                   nb_inputs: 1, multiple: true,  apply_to: ['string', 'number', 'datetime'], separator: ','},
-            {name: 'not in',             op: 'NOT IN(?)',     label: 'not in',               nb_inputs: 1, multiple: true,  apply_to: ['string', 'number', 'datetime'], separator: ','},
-            {name: 'less than',          op: '< ?',           label: 'less than',            nb_inputs: 1, multiple: false, apply_to: ['string', 'number', 'datetime']},
-            {name: 'less than equal',    op: '<= ?',          label: 'less than equal',      nb_inputs: 1, multiple: false, apply_to: ['string', 'number', 'datetime']},
-            {name: 'greater than',       op: '> ?',           label: 'greater than',         nb_inputs: 1, multiple: false, apply_to: ['string', 'number', 'datetime']},
-            {name: 'greater than equal', op: '>= ?',          label: 'greater than equal',   nb_inputs: 1, multiple: false, apply_to: ['string', 'number', 'datetime']},
-            {name: 'between',            op: 'BETWEEN ?',     label: 'between',              nb_inputs: 2, multiple: true,  apply_to: ['string', 'number', 'datetime'], separator: ' AND '},
-            {name: 'not between',        op: 'NOT BETWEEN ?', label: 'not between',          nb_inputs: 2, multiple: true,  apply_to: ['string', 'number', 'datetime'], separator: ' AND '},
-            {name: 'begins with',        op: 'LIKE(?)',       label: 'begins with',          nb_inputs: 1, multiple: false, apply_to: ['string'], mod: '{0}%'},
-            {name: 'not begins with',    op: 'NOT LIKE(?)',   label: 'not begins with',      nb_inputs: 1, multiple: false, apply_to: ['string'], mod: '{0}%'},
-            {name: 'contains',           op: 'LIKE(?)',       label: 'contains',             nb_inputs: 1, multiple: false, apply_to: ['string'], mod: '%{0}%'},
-            {name: 'not contains',       op: 'NOT LIKE(?)',   label: 'not contains',         nb_inputs: 1, multiple: false, apply_to: ['string'], mod: '%{0}%'},
-            {name: 'ends with',          op: 'LIKE(?)',       label: 'ends with',            nb_inputs: 1, multiple: false, apply_to: ['string'], mod: '%{0}'},
-            {name: 'not ends with',      op: 'NOT LIKE(?)',   label: 'not ends with',        nb_inputs: 1, multiple: false, apply_to: ['string'], mod: '%{0}'},
-            {name: 'is empty',           op: '= \'\'',        label: 'is empty',             nb_inputs: 0, multiple: false, apply_to: ['string']},
-            {name: 'is not empty',       op: '!= \'\'',       label: 'is not empty',         nb_inputs: 0, multiple: false, apply_to: ['string']},
-            {name: 'is null',            op: 'IS NULL',       label: 'is null',              nb_inputs: 0, multiple: false, apply_to: ['string', 'number', 'datetime', 'boolean']},
-            {name: 'is not null',        op: 'IS NOT NULL',   label: 'is not null',          nb_inputs: 0, multiple: false, apply_to: ['string', 'number', 'datetime', 'boolean']},
-        ];
+        return {
+            is_not_null: {name: 'is_not_null',        op: 'IS NOT NULL',   label: 'is not null',          nb_inputs: 0, multiple: false, apply_to: ['string', 'number', 'datetime', 'boolean']},
+            is_null: {name: 'is_null',            op: 'IS NULL',       label: 'is null',              nb_inputs: 0, multiple: false, apply_to: ['string', 'number', 'datetime', 'boolean']},
+            equal: {name: 'equal',              op: '= ?',           label: 'equal',                nb_inputs: 1, multiple: false, apply_to: ['string', 'number', 'datetime', 'boolean']},
+            not_equal: {name: 'not_equal',          op: '!= ?',          label: 'not equal',            nb_inputs: 1, multiple: false, apply_to: ['string', 'number', 'datetime', 'boolean']},
+            in: {name: 'in',                 op: 'IN(?)',         label: 'in',                   nb_inputs: 1, multiple: true,  apply_to: ['string', 'number', 'datetime'], separator: ','},
+            not_in: {name: 'not_in',             op: 'NOT IN(?)',     label: 'not in',               nb_inputs: 1, multiple: true,  apply_to: ['string', 'number', 'datetime'], separator: ','},
+            less: {name: 'less',          op: '< ?',           label: 'less than',            nb_inputs: 1, multiple: false, apply_to: ['string', 'number', 'datetime']},
+            less_or_equal: {name: 'less_or_equal',    op: '<= ?',          label: 'less than equal',      nb_inputs: 1, multiple: false, apply_to: ['string', 'number', 'datetime']},
+            greater: {name: 'greater',       op: '> ?',           label: 'greater than',         nb_inputs: 1, multiple: false, apply_to: ['string', 'number', 'datetime']},
+            greater_or_equal: {name: 'greater_or_equal', op: '>= ?',          label: 'greater than equal',   nb_inputs: 1, multiple: false, apply_to: ['string', 'number', 'datetime']},
+            between: {name: 'between',            op: 'BETWEEN ?',     label: 'between',              nb_inputs: 2, multiple: true,  apply_to: ['string', 'number', 'datetime'], separator: ' AND '},
+            not_between: {name: 'not_between',        op: 'NOT BETWEEN ?', label: 'not between',          nb_inputs: 2, multiple: true,  apply_to: ['string', 'number', 'datetime'], separator: ' AND '},
+            begins_with: {name: 'begins_with',        op: 'LIKE(?)',       label: 'begins with',          nb_inputs: 1, multiple: false, apply_to: ['string'], mod: '{0}%'},
+            not_begins_with: {name: 'not_begins_with',    op: 'NOT LIKE(?)',   label: 'not begins with',      nb_inputs: 1, multiple: false, apply_to: ['string'], mod: '{0}%'},
+            contains: {name: 'contains',           op: 'LIKE(?)',       label: 'contains',             nb_inputs: 1, multiple: false, apply_to: ['string'], mod: '%{0}%'},
+            not_contains: {name: 'not_contains',       op: 'NOT LIKE(?)',   label: 'not contains',         nb_inputs: 1, multiple: false, apply_to: ['string'], mod: '%{0}%'},
+            ends_with: {name: 'ends_with',          op: 'LIKE(?)',       label: 'ends with',            nb_inputs: 1, multiple: false, apply_to: ['string'], mod: '%{0}'},
+            not_ends_with: {name: 'not_ends_with',      op: 'NOT LIKE(?)',   label: 'not ends with',        nb_inputs: 1, multiple: false, apply_to: ['string'], mod: '%{0}'},
+            is_empty: {name: 'is_empty',           op: '= \'\'',        label: 'is empty',             nb_inputs: 0, multiple: false, apply_to: ['string']},
+            is_not_empty: {name: 'is_not_empty',       op: '!= \'\'',       label: 'is not empty',         nb_inputs: 0, multiple: false, apply_to: ['string']},
+        };
     }
 
     static get defaultCombinators() {
@@ -153,9 +153,9 @@ export default class QueryBuilder extends React.Component {
         const {fields, operators} = this.state.schema;
         return {
             id: uniqueId('r-'),
-            field: fields[0].name,
+            field: Object.keys(fields)[0],
             value: '',
-            operator: operators[0].name
+            operator: Object.keys(operators)[0]
         };
     }
 
@@ -176,7 +176,7 @@ export default class QueryBuilder extends React.Component {
         }
 
         const operators = this.state.schema.operators;
-        if (operators.filter(v => v.name === operator)[0].nb_inputs === 0) {
+        if (operators[operator].nb_inputs === 0) {
             return null;
         }
 
@@ -280,7 +280,6 @@ export default class QueryBuilder extends React.Component {
                 rules: ast,
                 sql: sql
             };
-            console.log(query);
         } else {
             const {field, operator, value} = node;
             query = {field, operator, value};
@@ -312,10 +311,9 @@ export default class QueryBuilder extends React.Component {
                     parts.push('(' + nl + parse(rule) + nl + ')' + nl);
                 }
                 else {
-                    var sqlOp = operators.filter(v => v.name === rule.operator)[0];
+                    var sqlOp = operators[rule.operator];
                     if (sqlOp != undefined) {
                         var op = sqlOp.op
-                        var inputValue = rule.value.toLowerCase().trim();
                         var sqlStr = '';
 
                         if (op === undefined) {
@@ -323,9 +321,13 @@ export default class QueryBuilder extends React.Component {
                         }
 
                         if (sqlOp.nb_inputs !== 0) {
-                            if (sqlOp.multiple && inputValue.includes(sqlOp.separator.toLowerCase())) {
-                                var tokens = inputValue.split(sqlOp.separator.toLowerCase())
-                                inputValue = tokens
+                            var inputValue = rule.value;
+                            if (typeof inputValue == 'string') {
+                                inputValue = inputValue.toLowerCase().trim();
+                                if (sqlOp.multiple && inputValue.includes(sqlOp.separator.toLowerCase())) {
+                                    var tokens = inputValue.split(sqlOp.separator.toLowerCase())
+                                    inputValue = tokens
+                                }
                             }
 
                             if (!(inputValue instanceof Array)) {
@@ -369,119 +371,170 @@ export default class QueryBuilder extends React.Component {
         return sql;
     }
 
-    static getRulesFromSQL= function(data) {
-        require('sql-parser');
-        if (!('SQLParser' in window)) {
-            Utils.error('MissingLibrary', 'SQLParser is required to parse SQL queries. Get it here https://github.com/mistic100/sql-parser');
+    static getRulesFromSQL(data) {
+        /* operators for SQL -> internal conversion */
+        var sqlRuleOperator = {
+            '=': function(v) {
+                return {
+                    val: v,
+                    op: v === '' ? 'is_empty' : 'equal'
+                };
+            },
+            '!=': function(v) {
+                return {
+                    val: v,
+                    op: v === '' ? 'is_not_empty' : 'not_equal'
+                };
+            },
+            'LIKE': function(v) {
+                if (v.slice(0, 1) == '%' && v.slice(-1) == '%') {
+                    return {
+                        val: v.slice(1, -1),
+                        op: 'contains'
+                    };
+                }
+                else if (v.slice(0, 1) == '%') {
+                    return {
+                        val: v.slice(1),
+                        op: 'ends_with'
+                    };
+                }
+                else if (v.slice(-1) == '%') {
+                    return {
+                        val: v.slice(0, -1),
+                        op: 'begins_with'
+                    };
+                }
+                else {
+                    error('SQLParse', 'Invalid value for LIKE operator "{0}"', v);
+                }
+            },
+            'IN':           function(v) { return { val: v, op: 'in' }; },
+            'NOT IN':       function(v) { return { val: v, op: 'not_in' }; },
+            '<':            function(v) { return { val: v, op: 'less' }; },
+            '<=':           function(v) { return { val: v, op: 'less_or_equal' }; },
+            '>':            function(v) { return { val: v, op: 'greater' }; },
+            '>=':           function(v) { return { val: v, op: 'greater_or_equal' }; },
+            'BETWEEN':      function(v) { return { val: v, op: 'between' }; },
+            'NOT BETWEEN':  function(v) { return { val: v, op: 'not_between' }; },
+            'IS': function(v) {
+                if (v !== null) {
+                    error('SQLParse', 'Invalid value for IS operator');
+                }
+                return { val: null, op: 'is_null' };
+            },
+            'IS NOT': function(v) {
+                if (v !== null) {
+                    error('SQLParse', 'Invalid value for IS operator');
+                }
+                return { val: null, op: 'is_not_null' };
+            }
         }
 
-        // var self = this;
+        var {lexer, parser} = require('sql-parser-mistic');
+        if (parser == undefined) {
+            error('MissingLibrary', 'SQLParser is required to parse SQL queries. Get it here https://github.com/mistic100/sql-parser');
+        }
 
-        // if (typeof data == 'string') {
-        //     data = { sql: data };
-        // }
+        var self = this;
 
-        // if (data.sql.toUpperCase().indexOf('SELECT') !== 0) {
-        //     data.sql = 'SELECT * FROM table WHERE ' + data.sql;
-        // }
+        if (typeof data == 'string') {
+            data = { sql: data };
+        }
 
-        // var parsed = SQLParser.parse(data.sql);
+        if (data.sql.toUpperCase().indexOf('SELECT') !== 0) {
+            data.sql = 'SELECT * FROM table WHERE ' + data.sql;
+        }
 
-        // if (!parsed.where) {
-        //     Utils.error('SQLParse', 'No WHERE clause found');
-        // }
+        var tokens = lexer.tokenize(data.sql);
+        var parsed = parser.parse(tokens)
 
-        // var out = {
-        //     condition: 'and',
-        //     rules: []
-        // };
-        // var curr = out;
+        if (!parsed.where) {
+            error('SQLParse', 'No WHERE clause found');
+        }
 
-        // (function flatten(data, i) {
-        //     // it's a node
-        //     if (['AND', 'OR'].indexOf(data.operation.toUpperCase()) !== -1) {
-        //         // create a sub-group if the condition is not the same and it's not the first level
-        //         if (i > 0 && curr.condition != data.operation.toUpperCase()) {
-        //             curr.rules.push({
-        //                 condition: self.settings.default_condition,
-        //                 rules: []
-        //             });
+        var out = {
+            combinator: 'and',
+            rules: []
+        };
+        var curr = out;
 
-        //             curr = curr.rules[curr.rules.length - 1];
-        //         }
+        (function flatten(data, i) {
+            // it's a node
+            if (['AND', 'OR'].indexOf(data.operation.toUpperCase()) !== -1) {
+                // create a sub-group if the combinator is not the same and it's not the first level
+                if (i > 0 && curr.combinator != data.operation.toUpperCase()) {
+                    curr.rules.push({
+                        combinator: 'and',
+                        rules: []
+                    });
 
-        //         curr.condition = data.operation.toUpperCase();
-        //         i++;
+                    curr = curr.rules[curr.rules.length - 1];
+                }
 
-        //         // some magic !
-        //         var next = curr;
-        //         flatten(data.left, i);
+                curr.combinator = data.operation.toUpperCase();
+                i++;
 
-        //         curr = next;
-        //         flatten(data.right, i);
-        //     }
-        //     // it's a leaf
-        //     else {
-        //         if (data.left.value === undefined || data.right.value === undefined) {
-        //             Utils.error('SQLParse', 'Missing field and/or value');
-        //         }
+                // some magic !
+                var next = curr;
+                flatten(data.left, i);
 
-        //         if ($.isPlainObject(data.right.value)) {
-        //             Utils.error('SQLParse', 'Value format not supported for {0}.', data.left.value);
-        //         }
+                curr = next;
+                flatten(data.right, i);
+            }
+            // it's a leaf
+            else {
+                if (data.left.value === undefined || data.right.value === undefined) {
+                    error('SQLParse', 'Missing field and/or value');
+                }
 
-        //         // convert array
-        //         var value;
-        //         if ($.isArray(data.right.value)) {
-        //             value = data.right.value.map(function(v) {
-        //                 return v.value;
-        //             });
-        //         }
-        //         else {
-        //             value = data.right.value;
-        //         }
+                // check if not plain object
+                if (Object.prototype.toString.call(data.right.value) === "[object Object]") {
+                    error('SQLParse', 'Value format not supported for {0}.', data.left.value);
+                }
 
-        //         // get actual values
-        //         if (stmt) {
-        //             if ($.isArray(value)) {
-        //                 value = value.map(stmt.parse);
-        //             }
-        //             else {
-        //                 value = stmt.parse(value);
-        //             }
-        //         }
+                // convert array
+                var value;
+                if (data.right.value && data.right.value.constructor === Array) {
+                    value = data.right.value.map(function(v) {
+                        return v.value;
+                    });
+                }
+                else {
+                    value = data.right.value;
+                }
 
-        //         // convert operator
-        //         var operator = data.operation.toUpperCase();
-        //         if (operator == '<>') operator = '!=';
+                // convert operator
+                var operator = data.operation.toUpperCase();
+                if (operator == '<>') operator = '!=';
 
-        //         var sqlrl;
-        //         if (operator == 'NOT LIKE') {
-        //             sqlrl = self.settings.sqlRuleOperator['LIKE'];
-        //         }
-        //         else {
-        //             sqlrl = self.settings.sqlRuleOperator[operator];
-        //         }
+                var sqlrl;
+                if (operator == 'NOT LIKE') {
+                    sqlrl = sqlRuleOperator['LIKE'];
+                }
+                else {
+                    sqlrl = sqlRuleOperator[operator];
+                }
 
-        //         if (sqlrl === undefined) {
-        //             Utils.error('UndefinedSQLOperator', 'Invalid SQL operation "{0}".', data.operation);
-        //         }
+                if (sqlrl === undefined) {
+                    error('UndefinedSQLOperator', 'Invalid SQL operation "{0}".', data.operation);
+                }
 
-        //         var opVal = sqlrl.call(this, value, data.operation);
-        //         if (operator == 'NOT LIKE') opVal.op = 'not_' + opVal.op;
+                var opVal = sqlrl.call(this, value, data.operation);
+                if (operator == 'NOT LIKE') opVal.op = 'not_' + opVal.op;
 
-        //         var left_value = data.left.values.join('.');
+                var left_value = data.left.values.join('.');
 
-        //         curr.rules.push({
-        //             id: self.change('getSQLFieldID', left_value, value),
-        //             field: left_value,
-        //             operator: opVal.op,
-        //             value: opVal.val
-        //         });
-        //     }
-        // }(parsed.where.conditions, 0));
+                curr.rules.push({
+                    id: uniqueId('r-'),
+                    field: left_value,
+                    operator: opVal.op,
+                    value: opVal.val
+                });
+            }
+        }(parsed.where.conditions, 0));
 
-        // return out;
+        return out;
     }
 
     _getOperatorByType = function(type) {
@@ -495,7 +548,7 @@ export default class QueryBuilder extends React.Component {
             }
         }
 
-        Utils.error('UndefinedOperator', 'Undefined operator "{0}"', type);
+        error('UndefinedOperator', 'Undefined operator "{0}"', type);
     }
 
     render() {

@@ -4,16 +4,16 @@ import QueryBuilder from './QueryBuilder';
 import './index.css';
 import './QueryBuilder.css'
 
-const fields = [
-    {name: 'firstName', label: 'First Name'},
-    {name: 'lastName', label: 'Last Name'},
-    {name: 'age', label: 'Age'},
-    {name: 'address', label: 'Address'},
-    {name: 'phone', label: 'Phone'},
-    {name: 'email', label: 'Email'},
-    {name: 'twitter', label: 'Twitter'},
-    {name: 'isDev', label: 'Is a Developer?', value: false},
-];
+const fields = {
+    firstName: {name: 'firstName', label: 'First Name'},
+    lastName: {name: 'lastName', label: 'Last Name'},
+    age: {name: 'age', label: 'Age'},
+    address: {name: 'address', label: 'Address'},
+    phone: {name: 'phone', label: 'Phone'},
+    email: {name: 'email', label: 'Email'},
+    twitter: {name: 'twitter', label: 'Twitter'},
+    isDev: {name: 'isDev', label: 'Is a Developer?', value: false},
+};
 
 function logQuery(query) {
     //console.log(query);
