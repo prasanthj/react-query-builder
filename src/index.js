@@ -16,7 +16,7 @@ const fields = {
 };
 
 function logQuery(query) {
-    //console.log(query);
+    console.log(query);
 }
 
 ReactDOM.render(
